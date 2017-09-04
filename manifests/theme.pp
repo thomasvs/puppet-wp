@@ -4,6 +4,7 @@ define wp::theme (
 ) {
 	#$name = $title,
 	include wp::cli
+	include wp::params
 
 	case $ensure {
 		enabled: {
@@ -11,18 +12,19 @@ define wp::theme (
 
 			exec { "wp install theme $title":
 				cwd     => $location,
-				command => "/usr/bin/wp theme install $slug",
-				unless  => "/usr/bin/wp theme is-installed $slug",
-				before  => Wp::Command["$location theme $slug $ensure"],
+				user    =>  $::wp::user,
+				command => "${wp::params::bin_path}/wp theme install $title",
+				unless  => "${wp::params::bin_path}/wp theme is-installed $title",
+				before  => Wp::Command["$location theme $title $ensure"],
 				require => Class["wp::cli"],
-				onlyif  => "/usr/bin/wp core is-installed"
+				onlyif  => "${wp::params::bin_path}/wp core is-installed"
 			}
 		}
 		default: {
 			fail("Invalid ensure for wp::theme")
 		}
 	}
-	wp::command { "$location theme $command":
+	wp::command { "$location theme $title $ensure":
 		location => $location,
 		command => "theme $command"
 	}
