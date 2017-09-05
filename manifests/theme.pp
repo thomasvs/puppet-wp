@@ -9,6 +9,7 @@ define wp::theme (
 	case $ensure {
 		enabled: {
 			$command = "activate $title"
+			$unless = "/usr/bin/test `${wp::params::bin_path}/wp theme list --name=${title} --field=status $slug` = active"
 
 			exec { "wp install theme $title":
 				cwd     => $location,
@@ -26,6 +27,7 @@ define wp::theme (
 	}
 	wp::command { "$location theme $title $ensure":
 		location => $location,
-		command => "theme $command"
+		command => "theme $command",
+		unless => $unless,
 	}
 }
