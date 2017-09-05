@@ -11,7 +11,7 @@ define wp::command (
 		cwd => $location,
 		user => $::wp::user,
 		require => [ Class['wp::cli'] ],
-		onlyif => "${wp::params::bin_path}/wp core is-installed"
-		unless  => $unless,
+		onlyif => "${wp::params::bin_path}/wp core is-installed",
+		unless => $unless,
 	}
 }
