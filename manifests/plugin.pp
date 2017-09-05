@@ -10,6 +10,7 @@ define wp::plugin (
 	case $ensure {
 		enabled: {
 			$command = "activate $slug"
+			$unless = "/usr/bin/test `${wp::params::bin_path}/wp plugin get --field=status $slug` = active"
 
 			exec { "wp install plugin $title":
 				cwd     => $location,
@@ -23,6 +24,7 @@ define wp::plugin (
 		}
 		disabled: {
 			$command = "deactivate $slug"
+			$unless = "/usr/bin/test `${wp::params::bin_path}/wp plugin get --field=status $slug` = inactive"
 		}
 		default: {
 			fail("Invalid ensure for wp::plugin")
@@ -37,6 +39,7 @@ define wp::plugin (
 	}
 	wp::command { "$location plugin $slug $ensure":
 		location => $location,
-		command => $args
+		command => $args,
+		unless => $unless,
 	}
 }

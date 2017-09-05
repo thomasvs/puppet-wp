@@ -1,9 +1,10 @@
 define wp::command (
 	$location,
-	$command
+	$command,
+	$unless = undef,
 ) {
 	include wp::cli
-  include wp::params
+	include wp::params
 
 	exec {"$location wp $command":
 		command => "${wp::params::bin_path}/wp $command",
@@ -11,5 +12,6 @@ define wp::command (
 		user => $::wp::user,
 		require => [ Class['wp::cli'] ],
 		onlyif => "${wp::params::bin_path}/wp core is-installed"
+		unless  => $unless,
 	}
 }
