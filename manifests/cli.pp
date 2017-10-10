@@ -5,6 +5,8 @@ class wp::cli (
 ) {
 	include wp
 
+  $bin_path = $wp::params::bin_path
+
 	if 'installed' == $ensure or 'present' == $ensure {
 		# Create the install path
 		file { [ "$install_path", "$install_path/bin" ]:
@@ -26,14 +28,14 @@ class wp::cli (
 		}
 
 		# Symlink it across
-		file { '/usr/bin/wp':
+		file { "${bin_path}/wp":
 			ensure => link,
 			target => "$install_path/bin/wp",
 			require => File[ "$install_path/bin/wp" ],
 		}
 	}
 	elsif 'absent' == $ensure {
-		file { "/usr/bin/wp":
+		file { "${bin_path}/wp":
 			ensure => absent,
 		}
 		file { "/usr/local/src/wp-cli":

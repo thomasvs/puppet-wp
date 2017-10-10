@@ -6,6 +6,7 @@ define wp::plugin (
 	$version = 'latest',
 ) {
 	include wp::cli
+  include wp::params
 
 	if ( $networkwide ) {
 		$network = ' --network'
@@ -20,10 +21,10 @@ define wp::plugin (
 			exec { "wp install plugin $title --activate$network$held":
 				cwd     => $location,
 				user    => $::wp::user,
-				command => "/usr/bin/wp plugin install $slug --activate $held",
-				unless  => "/usr/bin/wp plugin is-installed $slug",
+				command => "${wp::params::bin_path}/wp plugin install $slug --activate $held",
+				unless  => "${wp::params::bin_path}/wp plugin is-installed $slug",
 				require => Class["wp::cli"],
-				onlyif  => "/usr/bin/wp core is-installed"
+				onlyif  => "${wp::params::bin_path}/wp core is-installed"
 			}
 		}
 		disabled: {
