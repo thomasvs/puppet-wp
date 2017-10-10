@@ -21,17 +21,17 @@ define wp::plugin (
 			exec { "wp install plugin $title --activate$network$held":
 				cwd     => $location,
 				user    => $::wp::user,
-				command => "${wp::params::bin_path}/wp plugin install $slug --activate $held",
+				command => "${wp::params::bin_path}/wp plugin install $slug --activate$network$held",
 				unless  => "${wp::params::bin_path}/wp plugin is-installed $slug",
 				require => Class["wp::cli"],
 				onlyif  => "${wp::params::bin_path}/wp core is-installed"
 			}
 		}
 		disabled: {
-			exec { "wp deactivate plugin $title$network$held":
+			exec { "wp deactivate plugin $title$network":
 				cwd     => $location,
 				user    => $::wp::user,
-				command => "${wp::params::bin_path}/wp plugin deactivate $slug",
+				command => "${wp::params::bin_path}/wp plugin deactivate $slug$network",
 				require => Class["wp::cli"],
 				onlyif  => "${wp::params::bin_path}/wp core is-installed"
 			}
@@ -40,26 +40,26 @@ define wp::plugin (
 			exec { "wp install plugin $title$network$held":
 				cwd     => $location,
 				user    => $::wp::user,
-				command => "${wp::params::bin_path}/wp plugin install $slug --activate $held",
+				command => "${wp::params::bin_path}/wp plugin install $slug$network$held",
 				unless  => "${wp::params::bin_path}/wp plugin is-installed $slug",
 				require => Class["wp::cli"],
 				onlyif  => "${wp::params::bin_path}/wp core is-installed"
 			}
 		}
 		deleted: {
-			exec { "wp delete plugin $title":
+			exec { "wp delete plugin $title$network":
 				cwd     => $location,
 				user    => $::wp::user,
-				command => "${wp::params::bin_path}/wp plugin delete $slug",
+				command => "${wp::params::bin_path}/wp plugin delete $slug$network",
 				require => Class["wp::cli"],
 				onlyif  => "${wp::params::bin_path}/wp core is-installed"
 			}
 		}
 		uninstalled: {
-			exec { "wp uninstall plugin $title":
+			exec { "wp uninstall plugin $title --deactivate$network":
 				cwd     => $location,
 				user    => $::wp::user,
-				command => "${wp::params::bin_path}/wp plugin uninstall $slug --deactivate",
+				command => "${wp::params::bin_path}/wp plugin uninstall $slug --deactivate$network",
 				require => Class["wp::cli"],
 				onlyif  => "${wp::params::bin_path}/wp core is-installed"
 			}
