@@ -20,17 +20,17 @@ define wp::plugin (
 			exec { "wp install plugin $title --activate$network$held":
 				cwd     => $location,
 				user    => $::wp::user,
-				command => "/usr/bin/wp plugin install $slug --activate $held",
+				command => "/usr/bin/wp plugin install $slug --activate$network$held",
 				unless  => "/usr/bin/wp plugin is-installed $slug",
 				require => Class["wp::cli"],
 				onlyif  => "/usr/bin/wp core is-installed"
 			}
 		}
 		disabled: {
-			exec { "wp deactivate plugin $title$network$held":
+			exec { "wp deactivate plugin $title$network":
 				cwd     => $location,
 				user    => $::wp::user,
-				command => "/usr/bin/wp plugin deactivate $slug",
+				command => "/usr/bin/wp plugin deactivate $slug$network",
 				require => Class["wp::cli"],
 				onlyif  => "/usr/bin/wp core is-installed"
 			}
@@ -39,26 +39,26 @@ define wp::plugin (
 			exec { "wp install plugin $title$network$held":
 				cwd     => $location,
 				user    => $::wp::user,
-				command => "/usr/bin/wp plugin install $slug --activate $held",
+				command => "/usr/bin/wp plugin install $slug$network$held",
 				unless  => "/usr/bin/wp plugin is-installed $slug",
 				require => Class["wp::cli"],
 				onlyif  => "/usr/bin/wp core is-installed"
 			}
 		}
 		deleted: {
-			exec { "wp delete plugin $title":
+			exec { "wp delete plugin $title$network":
 				cwd     => $location,
 				user    => $::wp::user,
-				command => "/usr/bin/wp plugin delete $slug",
+				command => "/usr/bin/wp plugin delete $slug$network",
 				require => Class["wp::cli"],
 				onlyif  => "/usr/bin/wp core is-installed"
 			}
 		}
 		uninstalled: {
-			exec { "wp uninstall plugin $title":
+			exec { "wp uninstall plugin $title --deactivate$network":
 				cwd     => $location,
 				user    => $::wp::user,
-				command => "/usr/bin/wp plugin uninstall $slug --deactivate",
+				command => "/usr/bin/wp plugin uninstall $slug --deactivate$network",
 				require => Class["wp::cli"],
 				onlyif  => "/usr/bin/wp core is-installed"
 			}
